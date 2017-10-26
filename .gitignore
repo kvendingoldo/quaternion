@@ -1,0 +1,25 @@
+### Folders
+out/
+target/
+tmp/
+__pycache__
+
+
+### Extensions
+*.ids
+*.xml
+*.iws
+*.crt
+*.key
+*.csr
+*.pem
+*.p12
+*.iml
+.idea
+.DS_Store
+*-overriding.properties
+*.pyc
+
+
+### Files
+cookies.*
