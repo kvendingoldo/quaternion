@@ -33,12 +33,12 @@ class Quaternion(object):
             raise ValueError('')
 
     def __add__(self, other):
-        return Quaternion(
+        return Quaternion((
             self.real + other.real,
             self.im_i + other.im_i,
             self.im_j + other.im_j,
             self.im_k + other.im_k
-        )
+        ))
 
     def __iadd__(self, other):
         self = self.__add__(other)
@@ -48,12 +48,12 @@ class Quaternion(object):
         return self.__add__(other)
 
     def __sub__(self, other):
-        return Quaternion(
+        return Quaternion((
             self.real - other.real,
             self.im_i - other.im_i,
             self.im_j - other.im_j,
             self.im_k - other.im_k
-        )
+        ))
 
     def __isub__(self, other):
         self = self.__sub__(other)
@@ -71,7 +71,7 @@ class Quaternion(object):
         k (a*h + b*g - c*f + d*e)
         """
         if isinstance(other, Quaternion):
-            return Quaternion(
+            return Quaternion((
                 self.real * other.real - self.im_i * other.im_i -
                 self.im_j * other.im_j - self.im_k * other.im_k,
 
@@ -83,14 +83,14 @@ class Quaternion(object):
 
                 self.real * other.im_k + self.im_i * other.im_j -
                 self.im_j * other.im_i + self.im_k * other.real
-            )
+            ))
         elif isinstance(other, (int, float)):
-            return Quaternion(
+            return Quaternion((
                 other * self.real,
                 other * self.im_i,
                 other * self.im_j,
                 other * self.im_k
-            )
+            ))
         else:
             raise ValueError(other + ' value is incorrect')
 
@@ -103,13 +103,13 @@ class Quaternion(object):
 
     def norm(self):
         """ L2 norm of the Quaternion 4-vector. """
-        return self.real ** 2 + self.im_i ** 2 + self.im_j ** 2 + self.im_k ** 2
+        return ((self.real**2) + (self.im_i**2) + (self.im_j**2) + (self.im_k**2))
 
     def __abs__(self):
         return sqrt(self.norm())
 
     def __neg__(self):
-        return Quaternion(self.real, -self.im_i, -self.im_j, -self.im_k)
+        return Quaternion((self.real, -self.im_i, -self.im_j, -self.im_k))
 
     def __eq__(self, other):
         return self.real == other.real and self.im_i == other.im_i and \
@@ -118,9 +118,11 @@ class Quaternion(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __div__(self, other):
-        other = Quaternion(other)
-        return self * (-other) / (abs(other) ** 2)
+    def __floordiv__(self, other):
+        return self * ((-other) * (1 / (abs(other) ** 2)))
+
+    def __truediv__(self, other):
+        return self * ((-other) * (1 / (abs(other) ** 2)))
 
     def __idiv__(self, other):
         self = self.__div__(other)
@@ -137,17 +139,13 @@ class Quaternion(object):
                                                   self.im_j, self.im_k)
 
     @staticmethod
-    def random(rng):
-        return Quaternion(
+    def rand(rng=1000):
+        return Quaternion((
             np.random.uniform(np.random.randint(rng), np.random.randint(rng)),
             np.random.uniform(np.random.randint(rng), np.random.randint(rng)),
             np.random.uniform(np.random.randint(rng), np.random.randint(rng)),
             np.random.uniform(np.random.randint(rng), np.random.randint(rng))
-        )
-
-    @staticmethod
-    def random():
-        return Quaternion.random(1000)
+        ))
 
     def unit(self):
         self.__init__(0, 1, 0, 0)
@@ -180,9 +178,5 @@ class Quaternion(object):
         elif index == 3:
             self.im_k = value
 
-
-# add trigonometric form + unittests
-
-quaternion = Quaternion([1, 2, 3, 4])
-
-print(repr(quaternion))
+    def get_turtle(self):
+        return (self.real, self.im_i, self.im_j, self.im_k)
