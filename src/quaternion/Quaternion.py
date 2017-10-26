@@ -7,38 +7,23 @@ import numpy as np
 
 
 class Quaternion(object):
-    def __init__(self, real=0.0, im_i=0.0, im_j=0.0, im_k=0.0):
-        self.real = real
-        self.im_i = im_i
-        self.im_j = im_j
-        self.im_k = im_k
-
-    def __init__(self, obj):
-        if isinstance(obj, Quaternion):
-            self = obj
-        elif isinstance(obj, (int, float)):
-            self.real = obj
-            self.im_i = 0.0
-            self.im_j = 0.0
-            self.im_k = 0.0
-        elif isinstance(obj, (list, tuple)):
-            if len(obj) == 4:
-                self.real = obj[0]
-                self.im_i = obj[1]
-                self.im_j = obj[2]
-                self.im_k = obj[3]
-            else:
-                raise ValueError('Len is less than 4')
-        else:
-            raise ValueError('')
+    def __init__(self, *args):
+        tmp = [arg for arg in args]
+        items = tmp[:4] + [0] * (4 - len(tmp))
+        self.real = items[0]
+        self.im_i = items[1]
+        self.im_j = items[2]
+        self.im_k = items[3]
+        if len(args) > 4:
+            raise ValueError('Was passed more 5 elements to constructor')
 
     def __add__(self, other):
-        return Quaternion((
+        return Quaternion(
             self.real + other.real,
             self.im_i + other.im_i,
             self.im_j + other.im_j,
             self.im_k + other.im_k
-        ))
+        )
 
     def __iadd__(self, other):
         self = self.__add__(other)
@@ -48,12 +33,12 @@ class Quaternion(object):
         return self.__add__(other)
 
     def __sub__(self, other):
-        return Quaternion((
+        return Quaternion(
             self.real - other.real,
             self.im_i - other.im_i,
             self.im_j - other.im_j,
             self.im_k - other.im_k
-        ))
+        )
 
     def __isub__(self, other):
         self = self.__sub__(other)
@@ -71,7 +56,7 @@ class Quaternion(object):
         k (a*h + b*g - c*f + d*e)
         """
         if isinstance(other, Quaternion):
-            return Quaternion((
+            return Quaternion(
                 self.real * other.real - self.im_i * other.im_i -
                 self.im_j * other.im_j - self.im_k * other.im_k,
 
@@ -83,14 +68,14 @@ class Quaternion(object):
 
                 self.real * other.im_k + self.im_i * other.im_j -
                 self.im_j * other.im_i + self.im_k * other.real
-            ))
+            )
         elif isinstance(other, (int, float)):
-            return Quaternion((
+            return Quaternion(
                 other * self.real,
                 other * self.im_i,
                 other * self.im_j,
                 other * self.im_k
-            ))
+            )
         else:
             raise ValueError(other + ' value is incorrect')
 
@@ -103,13 +88,13 @@ class Quaternion(object):
 
     def norm(self):
         """ L2 norm of the Quaternion 4-vector. """
-        return ((self.real**2) + (self.im_i**2) + (self.im_j**2) + (self.im_k**2))
+        return self.real ** 2 + self.im_i ** 2 + self.im_j ** 2 + self.im_k ** 2
 
     def __abs__(self):
         return sqrt(self.norm())
 
     def __neg__(self):
-        return Quaternion((self.real, -self.im_i, -self.im_j, -self.im_k))
+        return Quaternion(self.real, -self.im_i, -self.im_j, -self.im_k)
 
     def __eq__(self, other):
         return self.real == other.real and self.im_i == other.im_i and \
@@ -139,16 +124,21 @@ class Quaternion(object):
                                                   self.im_j, self.im_k)
 
     @staticmethod
-    def rand(rng=1000):
-        return Quaternion((
+    def random(rng=1000):
+        return Quaternion(
             np.random.uniform(np.random.randint(rng), np.random.randint(rng)),
             np.random.uniform(np.random.randint(rng), np.random.randint(rng)),
             np.random.uniform(np.random.randint(rng), np.random.randint(rng)),
             np.random.uniform(np.random.randint(rng), np.random.randint(rng))
-        ))
+        )
 
-    def unit(self):
-        self.__init__(0, 1, 0, 0)
+    @staticmethod
+    def unit():
+        return Quaternion(0, 1, 0, 0)
+
+    @staticmethod
+    def zero():
+        return Quaternion(0, 0, 0, 0)
 
     def scalar(self):
         """ Return the real or scalar component of the Quaternion object. """
@@ -157,6 +147,9 @@ class Quaternion(object):
     def vector(self):
         """ Array of the 3 imaginary elements of the Quaternion object. """
         return [self.im_i, self.im_j, self.im_k]
+
+    def conjugate(self):
+        return Quaternion(self.real, -self.im_i, -self.im_j, -self.im_k)
 
     def __getitem__(self, index):
         if index == 0:
