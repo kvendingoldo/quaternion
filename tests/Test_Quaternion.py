@@ -103,14 +103,14 @@ class TestQuaternion(unittest.TestCase):
 
     def test_conjugate(self):
         q = Quaternion.random()
-        q1 = q.conjugate()
+        q1 = ~q
         q2 = pyQuaternion(q.get_turtle()).conjugate
 
         [self.assertLess(abs(q1[index]) - abs(q2[index]), 1e-8) for index in range(4)]
 
     def test_norm(self):
         q = Quaternion.random()
-        self.assertLess(pyQuaternion(q.get_turtle()).norm - q.norm(), 1e-8)
+        self.assertLess(pyQuaternion(q.get_turtle()).norm - q.norm, 1e-8)
 
     def test_neg(self):
         q = Quaternion.random()
