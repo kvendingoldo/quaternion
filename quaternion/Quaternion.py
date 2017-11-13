@@ -217,7 +217,7 @@ class Quaternion(object):
         elif np.fabs(-φ_1 - sin_angle_2) <= 1e-5:
             α = -φ_1
 
-        print('q = %g(cos(%g) + (%g, %g, %g) * sin(%g))' % (λ, α, ξ[0], ξ[1], ξ[2], α))
+        print('q = %g(cos(%g°) + (%g, %g, %g) * sin(%g°))' % (λ, α, ξ[0], ξ[1], ξ[2], α))
 
     @property
     def trigonometric_form(self):
