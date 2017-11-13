@@ -195,7 +195,29 @@ class Quaternion(object):
 
     def print_trigonometric_form(self):
         λ, cos_v, ξ, sin_v = self.trigonometric_form
-        print('q = %g(cos(%g) + (%g, %g, %g) * sin(%g))' % (λ, cos_v, ξ[0], ξ[1], ξ[2], sin_v))
+
+        acos = np.arccos(cos_v)
+        asin = np.arcsin(sin_v)
+
+        φ_1 = np.degrees(acos)
+        φ_2 = np.degrees(asin)
+
+        sin_angle_1 = φ_2
+        sin_angle_2 = 180 - φ_2
+
+        if np.fabs(φ_1  - sin_angle_1) <= 1e-5:
+            α = φ_1
+
+        elif np.fabs(φ_1  - sin_angle_2) <= 1e-5:
+            α = φ_1
+
+        elif np.fabs(-φ_1 - sin_angle_1) <= 1e-5:
+            α = -φ_1
+
+        elif np.fabs(-φ_1 - sin_angle_2) <= 1e-5:
+            α = -φ_1
+
+        print('q = %g(cos(%g) + (%g, %g, %g) * sin(%g))' % (λ, α, ξ[0], ξ[1], ξ[2], α))
 
     @property
     def trigonometric_form(self):
